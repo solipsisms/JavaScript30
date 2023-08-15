@@ -10,39 +10,39 @@
 
 
   <div class="keys">
-    <div data-key="65" class="key">
+    <div data-key="KeyA" class="key">
       <kbd>A</kbd>
       <span class="sound">clap</span>
     </div>
-    <div data-key="83" class="key">
+    <div data-key="KeyS" class="key">
       <kbd>S</kbd>
       <span class="sound">hihat</span>
     </div>
-    <div data-key="68" class="key">
+    <div data-key="KeyD" class="key">
       <kbd>D</kbd>
       <span class="sound">kick</span>
     </div>
-    <div data-key="70" class="key">
+    <div data-key="KeyF" class="key">
       <kbd>F</kbd>
       <span class="sound">openhat</span>
     </div>
-    <div data-key="71" class="key">
+    <div data-key="KeyG" class="key">
       <kbd>G</kbd>
       <span class="sound">boom</span>
     </div>
-    <div data-key="72" class="key">
+    <div data-key="KeyH" class="key">
       <kbd>H</kbd>
       <span class="sound">ride</span>
     </div>
-    <div data-key="74" class="key">
+    <div data-key="KeyJ" class="key">
       <kbd>J</kbd>
       <span class="sound">snare</span>
     </div>
-    <div data-key="75" class="key">
+    <div data-key="KeyK" class="key">
       <kbd>K</kbd>
       <span class="sound">tom</span>
     </div>
-    <div data-key="76" class="key">
+    <div data-key="KeyL" class="key">
       <kbd>L</kbd>
       <span class="sound">tink</span>
     </div>
@@ -59,6 +59,34 @@
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
 <script>
+
+function playSound(e) {
+  //allow e to be the variable from the list above to correlate the keys pressed with the audio files for the given key (if it exists)
+  const audio = document.querySelector(`audio[data-key="${e.code}"]`);
+  //instead of selecting an audio element, we are selecting a key element also here (so we can do the animations)
+  const key = document.querySelector(`.key[data-key="${e.code}"]`);
+  if(!audio) return; //stop audio from running (some keys do not have audio files)
+  audio.currentTime = 0; //everytime the key is pressed start the audio over (so it can be spammed)
+  audio.play();
+  //key.addClass('playing'); -> how to do in jquery
+  //add the css quality of "playing" to any key that is pressed (additional css will be added to the element)
+  key.classList.add('playing');
+}
+
+function removeTransition(e) {
+  //when it is done moving into the transition, we want to reverse the transition
+  if(e.propertyName !== 'transform') return; //skip it if it is not a transform
+  //"this" is the key (this is what is called against the function)
+  //remove the class of "playing"
+  this.classList.remove('playing');
+}
+
+const keys = document.querySelectorAll('.key');
+//you can't listen to all in an array, must explicitly loop through them
+keys.forEach(key => key.addEventListener('transitionend', removeTransition));
+
+//focus on listening for a 'keydown' event (wait for a key to be pressed)
+window.addEventListener('keydown', playSound);
 
 </script>
 
